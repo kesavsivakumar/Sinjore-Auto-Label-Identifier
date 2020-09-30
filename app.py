@@ -2,15 +2,11 @@
 # -*- coding: utf-8 -*-
 import flask
 from flask import Flask,render_template_string,request
-from skimage.io import imread
-from skimage.transform import resize
-from sklearn.preprocessing import OneHotEncoder
 from sklearn import preprocessing
 import numpy as np
 from tensorflow.keras.models import load_model
 #from tensorflow.keras_retinanet.models import load_model
 from scipy import misc
-import imageio
 import tensorflow as tf
 global graph,classifier
 graph = tf.compat.v1.get_default_graph()
@@ -31,10 +27,6 @@ from tensorflow.keras import layers
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense
 from tensorflow.keras.models import model_from_json
-from tensorflow.keras.applications.resnet50 import ResNet50
-from tensorflow.keras.applications.resnet50 import preprocess_input
-from skimage import color
-from skimage import io
 import csv 
 import datetime
 import pickle
