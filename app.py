@@ -45,8 +45,8 @@ app = Flask(__name__)
 @app.route('/')
 @app.route('/index')
 def index():
-        #index.html file is located in the  SASTRA_Covid/template folder
-	return flask.render_template('index.html')
+        #index.html file is located in the  /template folder
+	return flask.render_template(r'index.html')
 
 
 @app.route('/predict', methods=['POST'])
@@ -55,7 +55,7 @@ def make_prediction():
         text= request.form['ParagraphContent']
         if text==None: 
             return render_template('index.html', label="No  Text")
-        with open(r'C:\Users\USER\Sinjore\vector.pkl', 'rb') as f:
+        with open(r'vector.pkl', 'rb') as f:
                 cv= pickle.load(f)
         inp=pre_process(text)
         if(re.match("AJNS*",str(text))!=None):
@@ -83,34 +83,34 @@ def make_prediction():
 
         X = cv.transform(inp).toarray()
         encoder = preprocessing.LabelEncoder()
-        encoder.classes_ = np.load(r'C:\Users\USER\Sinjore\Document_product_classes.npy')
+        encoder.classes_ = np.load(r'Document_product_classes.npy')
         v1=OneHotEncoder(handle_unknown='ignore')
         v1.fit(np.asarray([[0],[1],[2],[3],[4]]))
 
-        json_file = open(r'C:\Users\USER\Sinjore\H1vsH2vsH3vsH4.json', 'r')
+        json_file = open(r'H1vsH2vsH3vsH4.json', 'r')
         model_json = json_file.read()
         json_file.close()
         model = model_from_json(model_json)
 
-        json_file = open(r'C:\Users\USER\Sinjore\10label.json', 'r')
+        json_file = open(r'10label.json', 'r')
         model_json = json_file.read()
         json_file.close()
         model2 = model_from_json(model_json)
 
         #model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
-        model = load_model(r'C:\Users\USER\Sinjore\H1vsH2vsH3vsH4.h5')
+        model = load_model(r'H1vsH2vsH3vsH4.h5')
         binary=model.predict(X)
         label=v1.inverse_transform(binary)
         tag=encoder.inverse_transform(label)
         if tag[0]=='Other':
-                with open(r'C:\Users\USER\Sinjore\vector_2.pkl', 'rb') as f:
+                with open(r'vector_2.pkl', 'rb') as f:
                         cv2= pickle.load(f)
                 X = cv2.transform(inp).toarray()
                 encoder2 = preprocessing.LabelEncoder()
-                encoder2.classes_ = np.load(r'C:\Users\USER\Sinjore\Document_product_classes_2.npy')
+                encoder2.classes_ = np.load(r'Document_product_classes_2.npy')
                 v2=OneHotEncoder(handle_unknown='ignore')
                 v2.fit(np.asarray([[0],[1],[2],[3],[4],[5],[6],[7],[8]]))
-                model2 = load_model(r'C:\Users\USER\Sinjore\10label.h5')
+                model2 = load_model(r'10label.h5')
                 binary=model2.predict(X)
                 label=v2.inverse_transform(binary)
                 tag=encoder2.inverse_transform(label)       
