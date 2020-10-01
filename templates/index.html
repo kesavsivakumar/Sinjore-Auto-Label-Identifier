@@ -21,40 +21,7 @@ body
 	 <input name="ParagraphContent" >
      <input type="submit" value="Predict"> 
 	 <h1 id='result'/>
-	<script>
-	var loadFile = function(event) {
-    var output = document.getElementById('output');
-    output.src = URL.createObjectURL(event.target.files[0]);
-  	};
-	var l={{label}};
-	var res = document.getElementById('result');
-	if(l==0){
-		res.innerHTML='Chest X-ray seems to be <b> normal. </b>';
-		}
-	else
-	{   if(l==1)
-	     {
-		res.innerHTML='Possible <b> BACTERIAL </b>infection!!! Consult doctor and take proper medication !!! Get Well soon.';
-		 }
-		else
-		{
-		if(l==2){
-		res.innerHTML='Possible <b> VIRAL </b>infection!!! Consult doctor and take proper medication !!! Get Well soon.';
-		       }
-		else
-		{
-		  if(l==3){
-		res.innerHTML='Possible <b> COVID-19 </b> infection. Try to isolate yourself and consult doctor immediately !!! Get well soon';
-		       }
-		  else{
-		    res.innerHTML='It was an <b> invalid image. </b>';}	   
-		 }
-		}
-	}
 	
-
-  	
-	</script>
 </body>
 
 </html>
