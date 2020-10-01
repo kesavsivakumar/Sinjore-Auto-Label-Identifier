@@ -32,6 +32,7 @@ import datetime
 import pickle
 from sklearn.externals import joblib
 import os
+from sklearn.preprocessing import OneHotEncoder
 
 app = Flask(__name__)
 
