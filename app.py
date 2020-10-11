@@ -33,6 +33,7 @@ import pickle
 from sklearn.externals import joblib
 import os
 from sklearn.preprocessing import OneHotEncoder
+from os import environ
 
 app = Flask(__name__)
 
@@ -170,5 +171,4 @@ def pre_process(text):
 
 
 if __name__=='__main__':
-	from os import environ
 	app.run(host='0.0.0.0',port=environ.get("PORT", 8000),debug=True)
