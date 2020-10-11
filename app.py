@@ -96,19 +96,19 @@ def make_prediction():
         return render_template('index.html',output=output)
        
 def H1_H2_H3(inp,text):
-        with open(r'C:\Users\USER\Sinjore\vector_H1-H2-H3.pkl', 'rb') as f:
+        with open(r'vector_H1-H2-H3.pkl', 'rb') as f:
                 cv= pickle.load(f)
         X = cv.transform(inp).toarray()
         encoder = preprocessing.LabelEncoder()
-        encoder.classes_ = np.load(r'C:\Users\USER\Sinjore\Document_product_classes_H1-H2-H3.npy')
+        encoder.classes_ = np.load(r'Document_product_classes_H1-H2-H3.npy')
         v1=OneHotEncoder(handle_unknown='ignore')
         v1.fit(np.asarray([[0],[1],[2]]))
 
-        json_file = open(r'C:\Users\USER\Sinjore\H1vsH2vsH3.json', 'r')
+        json_file = open(r'H1vsH2vsH3.json', 'r')
         model_json = json_file.read()
         json_file.close()
         model = model_from_json(model_json)
-        model = load_model(r'C:\Users\USER\Sinjore\H1vsH2vsH3.h5')
+        model = load_model(r'H1vsH2vsH3.h5')
         binary=model.predict(X)
         label=v1.inverse_transform(binary)
         tag=encoder.inverse_transform(label)
@@ -116,19 +116,19 @@ def H1_H2_H3(inp,text):
         return text
 
 def six_label(inp,text):
-        with open(r'C:\Users\USER\Sinjore\vector_6label.pkl', 'rb') as f:
+        with open(r'vector_6label.pkl', 'rb') as f:
                 cv= pickle.load(f)
         X = cv.transform(inp).toarray()
         encoder = preprocessing.LabelEncoder()
-        encoder.classes_ = np.load(r'C:\Users\USER\Sinjore\Document_product_classes_6label.npy')
+        encoder.classes_ = np.load(r'Document_product_classes_6label.npy')
         v1=OneHotEncoder(handle_unknown='ignore')
         v1.fit(np.asarray([[0],[1],[2],[3],[4],[5]]))
 
-        json_file = open(r'C:\Users\USER\Sinjore\model-6label.json', 'r')
+        json_file = open(r'model-6label.json', 'r')
         model_json = json_file.read()
         json_file.close()
         model = model_from_json(model_json)
-        model = load_model(r'C:\Users\USER\Sinjore\model-6label.h5')
+        model = load_model(r'model-6label.h5')
         binary=model.predict(X)
         label=v1.inverse_transform(binary)
         tag=encoder.inverse_transform(label)
@@ -136,19 +136,19 @@ def six_label(inp,text):
         return text
         
 def TX_ABS(inp,text):
-        with open(r'C:\Users\USER\Sinjore\vector_TX_vs_ABS.pkl', 'rb') as f:
+        with open(r'vector_TX_vs_ABS.pkl', 'rb') as f:
                 cv= pickle.load(f)
         X = cv.transform(inp).toarray()
         encoder = preprocessing.LabelEncoder()
-        encoder.classes_ = np.load(r'C:\Users\USER\Sinjore\Document_product_classes_TX_vs_ABS.npy')
+        encoder.classes_ = np.load(r'Document_product_classes_TX_vs_ABS.npy')
         v1=OneHotEncoder(handle_unknown='ignore')
         v1.fit(np.asarray([[0],[1]]))
 
-        json_file = open(r'C:\Users\USER\Sinjore\model_TX_vs_ABS.json', 'r')
+        json_file = open(r'model_TX_vs_ABS.json', 'r')
         model_json = json_file.read()
         json_file.close()
         model = model_from_json(model_json)
-        model = load_model(r'C:\Users\USER\Sinjore\model_TX_vs_ABS.h5')
+        model = load_model(r'model_TX_vs_ABS.h5')
         binary=model.predict(X)
         label=v1.inverse_transform(binary)
         tag=encoder.inverse_transform(label)
