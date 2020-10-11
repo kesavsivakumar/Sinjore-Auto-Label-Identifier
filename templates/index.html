@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html> 
 
 <head>
@@ -19,9 +20,31 @@ body
      <form action="/predict" method="post" enctype="multipart/form-data">
      <label>Content</label>
 	 <input name="ParagraphContent" >
-     <input type="submit" value="Predict"> 
+     <input type="submit" value="Predict"> <br><br>
+	 <input type="radio" name="options" id="option1" value="option1" checked="checked"> 
+	 <label for="option1">H1 vs H2 vs H3 classifier </label></input><br>
+	<input type="radio" name="options" id="option2" value="option2">
+	<label for="option2"> AFF vs AT vs L vs LL vs List Paragraph vs REF classifier</label></input><br>
+	<input type="radio" name="options" id="option3" value="option3">
+	<label for="option3"> ABS vs TX classifier</label></input><br>
 	 <h1 id='result'/>
+	 </form>
+	 {% if output %}
+   {{ output }}
+{% endif %}
+	 <!--<script>
+  var loadFile = function(event) {
+   var output = document.getElementById('output'); 
+    output.src = URL.createObjectURL(event.target.files[0]); 
+  }; 
+	var l={{text}};
+	var res = document.getElementById('result');
 	
+		res.innerHTML=l;
+	
+
+  	
+	</script>-->
 </body>
 
 </html>
