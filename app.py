@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 import flask
-from flask import Flask,render_template_string,request
+from flask import Flask,render_template,request
 from sklearn import preprocessing
 import numpy as np
 from tensorflow.keras.models import load_model
