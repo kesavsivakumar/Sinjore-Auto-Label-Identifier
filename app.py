@@ -39,8 +39,8 @@ app = Flask(__name__)
 @app.route('/')
 @app.route('/index')
 def index():
-        #index.html file is located in the  /template folder
-	return flask.render_template(r'index.html')
+        #index.html file is located in the  SASTRA_Covid/template folder
+	return flask.render_template('index.html')
 
 
 @app.route('/predict', methods=['POST'])
@@ -49,67 +49,111 @@ def make_prediction():
         text= request.form['ParagraphContent']
         if text==None: 
             return render_template('index.html', label="No  Text")
-        with open(r'vector.pkl', 'rb') as f:
-                cv= pickle.load(f)
+        
         inp=pre_process(text)
+        
         if(re.match("AJNS*",str(text))!=None):
-                return render_template_string('A_ID - '+text)
+                output='A_ID - '+text
+                return render_template('index.html',output=output)
         if(re.match("Author Queries",str(text))!=None or re.match("AQ[0-9][0-9]*:*",str(text))!=None):
-                return render_template_string('AQ - '+text)
+                output='AQ - '+text
+                return render_template('index.html',output=output)
         if(re.match("abstract",str(text).lower())!=None):
-                return render_template_string('ABSH - '+text)
+                output='ABSH - '+text
+                return render_template('index.html',output=output)
         if(re.match("how to cite this article*",str(text).lower())!=None):
-                return render_template_string('HTC - '+text)
+                output='HTC - '+text
+                return render_template('index.html',output=output)
         if(re.match("received:*",str(text).lower())!=None or re.match("accepted:*",str(text).lower())!=None or re.match("revised:*",str(text).lower())!=None):
-                return render_template_string('HIS - '+text)
+                output='HIS - '+text
+                return render_template('index.html',output=output)
         if(re.match("figure [0-9]*[0-9]*:*",str(text).lower())!=None):
-                return render_template_string('FGC - '+text)
+                output='FGC - '+text
+                return render_template('index.html',output=output)
         if(re.match("table [0-9]*[0-9]*:*",str(text).lower())!=None):
-                return render_template_string('Normal - '+text)
+                output='Normal - '+text
+                return render_template('index.html',output=output)
         if(re.match("address for correspondence:*",str(text).lower())!=None):
-                return render_template_string('ADD - '+text)   
+                output='ADD - '+text
+                return render_template('index.html',output=output) 
 
         if(re.match("keywords*",str(text).lower())!=None):
-                return render_template_string('KWD - '+text)
+                output='KWD - '+text
+                return render_template('index.html',output=output)
         
 
         
+        option = request.form['options']
+        if option=='option1':
+                output=H1_H2_H3(inp,text)
+        elif option=='option2':
+                output=six_label(inp,text)
+        elif option=='option3':
+                output=TX_ABS(inp,text)
+        elif option ==None:
+                return render_template_string('the text could not be classified into any othe given fields please try click any of the models mentioned')
 
+        return render_template('index.html',output=output)
+       
+def H1_H2_H3(inp,text):
+        with open(r'C:\Users\USER\Sinjore\vector_H1-H2-H3.pkl', 'rb') as f:
+                cv= pickle.load(f)
         X = cv.transform(inp).toarray()
         encoder = preprocessing.LabelEncoder()
-        encoder.classes_ = np.load(r'Document_product_classes.npy')
+        encoder.classes_ = np.load(r'C:\Users\USER\Sinjore\Document_product_classes_H1-H2-H3.npy')
         v1=OneHotEncoder(handle_unknown='ignore')
-        v1.fit(np.asarray([[0],[1],[2],[3],[4]]))
+        v1.fit(np.asarray([[0],[1],[2]]))
 
-        json_file = open(r'H1vsH2vsH3vsH4.json', 'r')
+        json_file = open(r'C:\Users\USER\Sinjore\H1vsH2vsH3.json', 'r')
         model_json = json_file.read()
         json_file.close()
         model = model_from_json(model_json)
-
-        json_file = open(r'10label.json', 'r')
-        model_json = json_file.read()
-        json_file.close()
-        model2 = model_from_json(model_json)
-
-        #model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
-        model = load_model(r'H1vsH2vsH3vsH4.h5')
+        model = load_model(r'C:\Users\USER\Sinjore\H1vsH2vsH3.h5')
         binary=model.predict(X)
         label=v1.inverse_transform(binary)
         tag=encoder.inverse_transform(label)
-        if tag[0]=='Other':
-                with open(r'vector_2.pkl', 'rb') as f:
-                        cv2= pickle.load(f)
-                X = cv2.transform(inp).toarray()
-                encoder2 = preprocessing.LabelEncoder()
-                encoder2.classes_ = np.load(r'Document_product_classes_2.npy')
-                v2=OneHotEncoder(handle_unknown='ignore')
-                v2.fit(np.asarray([[0],[1],[2],[3],[4],[5],[6],[7],[8]]))
-                model2 = load_model(r'10label.h5')
-                binary=model2.predict(X)
-                label=v2.inverse_transform(binary)
-                tag=encoder2.inverse_transform(label)       
         text= tag[0]+'  -  '+text
-        return render_template_string(text)
+        return text
+
+def six_label(inp,text):
+        with open(r'C:\Users\USER\Sinjore\vector_6label.pkl', 'rb') as f:
+                cv= pickle.load(f)
+        X = cv.transform(inp).toarray()
+        encoder = preprocessing.LabelEncoder()
+        encoder.classes_ = np.load(r'C:\Users\USER\Sinjore\Document_product_classes_6label.npy')
+        v1=OneHotEncoder(handle_unknown='ignore')
+        v1.fit(np.asarray([[0],[1],[2],[3],[4],[5]]))
+
+        json_file = open(r'C:\Users\USER\Sinjore\model-6label.json', 'r')
+        model_json = json_file.read()
+        json_file.close()
+        model = model_from_json(model_json)
+        model = load_model(r'C:\Users\USER\Sinjore\model-6label.h5')
+        binary=model.predict(X)
+        label=v1.inverse_transform(binary)
+        tag=encoder.inverse_transform(label)
+        text= tag[0]+'  -  '+text
+        return text
+        
+def TX_ABS(inp,text):
+        with open(r'C:\Users\USER\Sinjore\vector_TX_vs_ABS.pkl', 'rb') as f:
+                cv= pickle.load(f)
+        X = cv.transform(inp).toarray()
+        encoder = preprocessing.LabelEncoder()
+        encoder.classes_ = np.load(r'C:\Users\USER\Sinjore\Document_product_classes_TX_vs_ABS.npy')
+        v1=OneHotEncoder(handle_unknown='ignore')
+        v1.fit(np.asarray([[0],[1]]))
+
+        json_file = open(r'C:\Users\USER\Sinjore\model_TX_vs_ABS.json', 'r')
+        model_json = json_file.read()
+        json_file.close()
+        model = model_from_json(model_json)
+        model = load_model(r'C:\Users\USER\Sinjore\model_TX_vs_ABS.h5')
+        binary=model.predict(X)
+        label=v1.inverse_transform(binary)
+        tag=encoder.inverse_transform(label)
+        text= tag[0]+'  -  '+text
+        return text      
 
 def pre_process(text):
 	corpus=[]
@@ -126,6 +170,4 @@ def pre_process(text):
 
 
 if __name__=='__main__':
-	#app.run(host='0.0.0.0',port=8000,debug=True)
-	port = int(os.environ.get("PORT", 33507))
-	app.run(host='0.0.0.0', port=port)
+	app.run(host='0.0.0.0',port=8000,debug=True)
