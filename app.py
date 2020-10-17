@@ -89,7 +89,6 @@ def make_prediction():
 	if(re.match("*et al.:",str(text).lower())!=None):
                 output='RH - '+text
                 return render_template('index.html',output=output)
-	i
 	   
         
 
