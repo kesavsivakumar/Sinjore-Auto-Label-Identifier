@@ -84,8 +84,8 @@ def make_prediction():
 		output='H1 - '+text
 		return render_template('index.html',output=output)
 	if( re.match("conflicts of interest",str(text).lower())!=None or re.match("financial support and sponsorship",str(text).lower())!=None or re.match("statistical analysis",str(text).lower())!=None or re.match("acknowledgment",str(text).lower())!=None or re.match("declaration of patient consent",str(text).lower())!=None or re.match("case 1",str(text).lower())!=None or re.match("case 2",str(text).lower())!=None or re.match("limitation.",str(text).lower() or re.match("limitation.",str(text).lower())!=None):
-		output='H2 - '+text
-		return render_template('index.html',output=output)
+	        output='H2 - '+text
+		return render_template('index.html',output=output)	   
 	if(re.match("*et al.:",str(text).lower())!=None):
                 output='RH - '+text
                 return render_template('index.html',output=output)
