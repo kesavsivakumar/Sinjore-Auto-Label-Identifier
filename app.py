@@ -33,7 +33,7 @@ from tensorflow.keras.layers import Dense
 from tensorflow.keras.models import model_from_json
 from tensorflow.keras.applications.resnet50 import ResNet50
 from tensorflow.keras.applications.resnet50 import preprocess_input
-import cv2
+import os
 from skimage import color
 from skimage import io
 import csv 
