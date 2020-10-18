@@ -1,12 +1,16 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 import flask
-from flask import Flask,render_template,request
+from flask import Flask,render_template_string,render_template,request
+from skimage.io import imread
+from skimage.transform import resize
+from sklearn.preprocessing import OneHotEncoder
 from sklearn import preprocessing
 import numpy as np
 from tensorflow.keras.models import load_model
 #from tensorflow.keras_retinanet.models import load_model
 from scipy import misc
+import imageio
 import tensorflow as tf
 global graph,classifier
 graph = tf.compat.v1.get_default_graph()
@@ -27,13 +31,15 @@ from tensorflow.keras import layers
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense
 from tensorflow.keras.models import model_from_json
+from tensorflow.keras.applications.resnet50 import ResNet50
+from tensorflow.keras.applications.resnet50 import preprocess_input
+import cv2
+from skimage import color
+from skimage import io
 import csv 
 import datetime
 import pickle
 from sklearn.externals import joblib
-import os
-from sklearn.preprocessing import OneHotEncoder
-from os import environ
 
 app = Flask(__name__)
 
@@ -76,20 +82,23 @@ def make_prediction():
                 return render_template('index.html',output=output)
         if(re.match("address for correspondence:*",str(text).lower())!=None):
                 output='ADD - '+text
-                return render_template('index.html',output=output) 
-        if(re.match("keywords*",str(text).lower())!=None):
-                output='KWD - '+text
                 return render_template('index.html',output=output)
-	if( re.match("introduction",str(text).lower())!=None or re.match("references",str(text).lower())!=None or  re.match("conclusion",str(text).lower())!=None or re.match("case report.",str(text).lower())!=None or re.match("result.",str(text).lower())!=None or re.match("methods",str(text).lower())!=None or re.match("methodology",str(text).lower())!=None):
+        if( re.match("introduction",str(text).lower())!=None or re.match("references",str(text).lower())!=None or  re.match("conclusion",str(text).lower())!=None or re.match("case report.",str(text).lower())!=None or re.match("result.",str(text).lower())!=None or re.match("methods",str(text).lower())!=None or re.match("methodology",str(text).lower())!=None):
                 output='H1 - '+text
                 return render_template('index.html',output=output)
-        if( re.match("conflicts of interest",str(text).lower())!=None or re.match("financial support and sponsorship",str(text).lower())!=None or re.match("statistical analysis",str(text).lower())!=None or re.match("acknowledgment",str(text).lower())!=None or re.match("declaration of patient consent",str(text).lower())!=None or re.match("case 1",str(text).lower())!=None or re.match("case 2",str(text).lower())!=None or re.match("limitation.",str(text).lower())!=None or re.match("limitation.",str(text).lower())!=None):
+        if( re.match("conflicts of interest",str(text).lower())!=None or re.match("financial support and sponsorship",str(text).lower())!=None or re.match("statistical analysis",str(text).lower())!=None or re.match("acknowledgment",str(text).lower())!=None or re.match("declaration of patient consent",str(text).lower())!=None or re.match("case 1",str(text).lower())!=None or re.match("case 2",str(text).lower())!=None or re.match("limitation.",str(text).lower())!=None):
                 output='H2 - '+text
                 return render_template('index.html',output=output)
         if(re.match("*et al.:",str(text).lower())!=None):
                 output='RH - '+text
                 return render_template('index.html',output=output)
-	
+
+        if(re.match("keywords*",str(text).lower())!=None):
+                output='KWD - '+text
+                return render_template('index.html',output=output)
+        
+
+        
         option = request.form['options']
         if option=='option1':
                 output=H1_H2_H3(inp,text)
@@ -103,19 +112,19 @@ def make_prediction():
         return render_template('index.html',output=output)
        
 def H1_H2_H3(inp,text):
-        with open(r'vector_H1-H2-H3.pkl', 'rb') as f:
+        with open(r'C:\Users\USER\Sinjore\vector_H1-H2-H3.pkl', 'rb') as f:
                 cv= pickle.load(f)
         X = cv.transform(inp).toarray()
         encoder = preprocessing.LabelEncoder()
-        encoder.classes_ = np.load(r'Document_product_classes_H1-H2-H3.npy')
+        encoder.classes_ = np.load(r'C:\Users\USER\Sinjore\Document_product_classes_H1-H2-H3.npy')
         v1=OneHotEncoder(handle_unknown='ignore')
         v1.fit(np.asarray([[0],[1],[2]]))
 
-        json_file = open(r'H1vsH2vsH3.json', 'r')
+        json_file = open(r'C:\Users\USER\Sinjore\H1vsH2vsH3.json', 'r')
         model_json = json_file.read()
         json_file.close()
         model = model_from_json(model_json)
-        model = load_model(r'H1vsH2vsH3.h5')
+        model = load_model(r'C:\Users\USER\Sinjore\H1vsH2vsH3.h5')
         binary=model.predict(X)
         label=v1.inverse_transform(binary)
         tag=encoder.inverse_transform(label)
@@ -123,19 +132,19 @@ def H1_H2_H3(inp,text):
         return text
 
 def six_label(inp,text):
-        with open(r'vector_6label.pkl', 'rb') as f:
+        with open(r'C:\Users\USER\Sinjore\vector_6label.pkl', 'rb') as f:
                 cv= pickle.load(f)
         X = cv.transform(inp).toarray()
         encoder = preprocessing.LabelEncoder()
-        encoder.classes_ = np.load(r'Document_product_classes_6label.npy')
+        encoder.classes_ = np.load(r'C:\Users\USER\Sinjore\Document_product_classes_6label.npy')
         v1=OneHotEncoder(handle_unknown='ignore')
         v1.fit(np.asarray([[0],[1],[2],[3],[4],[5]]))
 
-        json_file = open(r'model-6label.json', 'r')
+        json_file = open(r'C:\Users\USER\Sinjore\model-6label.json', 'r')
         model_json = json_file.read()
         json_file.close()
         model = model_from_json(model_json)
-        model = load_model(r'model-6label.h5')
+        model = load_model(r'C:\Users\USER\Sinjore\model-6label.h5')
         binary=model.predict(X)
         label=v1.inverse_transform(binary)
         tag=encoder.inverse_transform(label)
@@ -143,19 +152,19 @@ def six_label(inp,text):
         return text
         
 def TX_ABS(inp,text):
-        with open(r'vector_TX_vs_ABS.pkl', 'rb') as f:
+        with open(r'C:\Users\USER\Sinjore\vector_TX_vs_ABS.pkl', 'rb') as f:
                 cv= pickle.load(f)
         X = cv.transform(inp).toarray()
         encoder = preprocessing.LabelEncoder()
-        encoder.classes_ = np.load(r'Document_product_classes_TX_vs_ABS.npy')
+        encoder.classes_ = np.load(r'C:\Users\USER\Sinjore\Document_product_classes_TX_vs_ABS.npy')
         v1=OneHotEncoder(handle_unknown='ignore')
         v1.fit(np.asarray([[0],[1]]))
 
-        json_file = open(r'model_TX_vs_ABS.json', 'r')
+        json_file = open(r'C:\Users\USER\Sinjore\model_TX_vs_ABS.json', 'r')
         model_json = json_file.read()
         json_file.close()
         model = model_from_json(model_json)
-        model = load_model(r'model_TX_vs_ABS.h5')
+        model = load_model(r'C:\Users\USER\Sinjore\model_TX_vs_ABS.h5')
         binary=model.predict(X)
         label=v1.inverse_transform(binary)
         tag=encoder.inverse_transform(label)
