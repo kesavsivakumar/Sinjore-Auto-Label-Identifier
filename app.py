@@ -81,14 +81,14 @@ def make_prediction():
                 output='KWD - '+text
                 return render_template('index.html',output=output)
 	if( re.match("introduction",str(text).lower())!=None or re.match("references",str(text).lower())!=None or  re.match("conclusion",str(text).lower())!=None or re.match("case report.",str(text).lower())!=None or re.match("result.",str(text).lower())!=None or re.match("methods",str(text).lower())!=None or re.match("methodology",str(text).lower())!=None):
-		output='H1 - '+text
-		return render_template('index.html',output=output)
-	if( re.match("conflicts of interest",str(text).lower())!=None or re.match("financial support and sponsorship",str(text).lower())!=None or re.match("statistical analysis",str(text).lower())!=None or re.match("acknowledgment",str(text).lower())!=None or re.match("declaration of patient consent",str(text).lower())!=None or re.match("case 1",str(text).lower())!=None or re.match("case 2",str(text).lower())!=None or re.match("limitation.",str(text).lower())!=None or re.match("limitation.",str(text).lower())!=None):
-		output='H2 - '+text
-		return render_template('index.html',output=output)
-	if(re.match("*et al.:",str(text).lower())!=None):
-		output='RH - '+text
-		return render_template('index.html',output=output)
+                output='H1 - '+text
+                return render_template('index.html',output=output)
+        if( re.match("conflicts of interest",str(text).lower())!=None or re.match("financial support and sponsorship",str(text).lower())!=None or re.match("statistical analysis",str(text).lower())!=None or re.match("acknowledgment",str(text).lower())!=None or re.match("declaration of patient consent",str(text).lower())!=None or re.match("case 1",str(text).lower())!=None or re.match("case 2",str(text).lower())!=None or re.match("limitation.",str(text).lower())!=None or re.match("limitation.",str(text).lower())!=None):
+                output='H2 - '+text
+                return render_template('index.html',output=output)
+        if(re.match("*et al.:",str(text).lower())!=None):
+                output='RH - '+text
+                return render_template('index.html',output=output)
 	
         option = request.form['options']
         if option=='option1':
