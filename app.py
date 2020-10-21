@@ -90,9 +90,8 @@ def make_prediction():
                 output='H2 - '+text
                 return render_template('index.html',output=output)
 	if(re.match("[a-zA-Z0-9]*[,.]* et al.:",str(text).lower())!=None):
-                output='RH - '+text
-                return render_template('index.html',output=output)
-
+		output='RH - '+text
+		return render_template('index.html',output=output)
         if(re.match("keywords*",str(text).lower())!=None):
                 output='KWD - '+text
                 return render_template('index.html',output=output)
