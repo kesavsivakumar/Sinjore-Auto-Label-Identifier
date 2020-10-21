@@ -89,7 +89,7 @@ def make_prediction():
         if( re.match("conflicts of interest",str(text).lower())!=None or re.match("financial support and sponsorship",str(text).lower())!=None or re.match("statistical analysis",str(text).lower())!=None or re.match("acknowledgment",str(text).lower())!=None or re.match("declaration of patient consent",str(text).lower())!=None or re.match("case 1",str(text).lower())!=None or re.match("case 2",str(text).lower())!=None or re.match("limitation.",str(text).lower())!=None):
                 output='H2 - '+text
                 return render_template('index.html',output=output)
-        if(re.match("*et al.:",str(text).lower())!=None):
+	if(re.match("[a-zA-Z0-9]*[,.]* et al.:",str(text).lower())!=None):
                 output='RH - '+text
                 return render_template('index.html',output=output)
 
@@ -103,13 +103,31 @@ def make_prediction():
         if option=='option1':
                 output=H1_H2_H3(inp,text)
         elif option=='option2':
-                output=six_label(inp,text)
-        elif option=='option3':
-                output=TX_ABS(inp,text)
+                output=model2(inp,text)
         elif option ==None:
                 return render_template_string('the text could not be classified into any othe given fields please try click any of the models mentioned')
 
         return render_template('index.html',output=output)
+
+def model2(inp,text):
+        with open(r'C:\Users\USER\Sinjore\vector_2.pkl', 'rb') as f:
+                cv= pickle.load(f)
+        X = cv.transform([text]).toarray()
+        encoder = preprocessing.LabelEncoder()
+        encoder.classes_ = np.load(r'C:\Users\USER\Sinjore\Document_product_classes_2.npy',allow_pickle=True)
+        v1=OneHotEncoder(handle_unknown='ignore')
+        v1.fit(np.asarray([[0],[1],[2],[3],[4],[5],[6]]))
+
+        json_file = open(r'C:\Users\USER\Sinjore\model2.json', 'r')
+        model_json = json_file.read()
+        json_file.close()
+        model = model_from_json(model_json)
+        model = load_model(r'C:\Users\USER\Sinjore\model2.h5')
+        binary=model.predict(X)
+        label=v1.inverse_transform(binary)
+        tag=encoder.inverse_transform(label)
+        text= tag[0]+'  -  '+text
+        return text
        
 def H1_H2_H3(inp,text):
         with open(r'C:\Users\USER\Sinjore\vector_H1-H2-H3.pkl', 'rb') as f:
