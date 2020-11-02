@@ -133,9 +133,9 @@ def model2(inp,text):
 def H1_H2_H3(inp,text):
         with open(r'vector_H1-H2-H3.pkl', 'rb') as f:
                 cv= pickle.load(f)
-        X = cv.transform(inp).toarray()
+        X = cv.transform([text]).toarray()
         encoder = preprocessing.LabelEncoder()
-        encoder.classes_ = np.load(r'Document_product_classes_H1-H2-H3.npy')
+        encoder.classes_ = np.load(r'Document_product_classes_H1-H2-H3.npy',allow_pickle=True)
         v1=OneHotEncoder(handle_unknown='ignore')
         v1.fit(np.asarray([[0],[1],[2]]))
 
