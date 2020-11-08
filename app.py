@@ -57,8 +57,9 @@ def make_prediction():
         if text==None: 
             return render_template('index.html', label="No  Text")
         
-        #inp=pre_process(text)
-	if(re.match("AJNS*",str(text))!=None):
+        inp=pre_process(text)
+        
+        if(re.match("AJNS*",str(text))!=None):
                 output='A_ID - '+text
                 return render_template('index.html',output=output)
         if(re.match("Author Queries",str(text))!=None or re.match("AQ[0-9][0-9]*:*",str(text))!=None):
@@ -96,6 +97,17 @@ def make_prediction():
                 output='KWD - '+text
                 return render_template('index.html',output=output)
         
+
+        
+        option = request.form['options']
+        if option=='option1':
+                output=H1_H2_H3(inp,text)
+        elif option=='option2':
+                output=model2(inp,text)
+        elif option ==None:
+                return render_template_string('the text could not be classified into any othe given fields please try click any of the models mentioned')
+
+        return render_template('index.html',output=output)
               
 
         
