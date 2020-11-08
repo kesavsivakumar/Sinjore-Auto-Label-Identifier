@@ -57,9 +57,9 @@ def make_prediction():
         if text==None: 
             return render_template('index.html', label="No  Text")
         
-        inp=pre_process(text)
+        #inp=pre_process(text)
         
-        if(re.match("AJNS*",text)!=None):
+        if(re.match("AJNS*",str(text))!=None):
                 output='A_ID - '+text
                 return render_template('index.html',output=output)
         if(re.match("Author Queries",str(text))!=None or re.match("AQ[0-9][0-9]*:*",str(text))!=None):
@@ -101,15 +101,15 @@ def make_prediction():
         
         option = request.form['options']
         if option=='option1':
-                output=H1_H2_H3(inp,text)
+                output=H1_H2_H3(text)
         elif option=='option2':
-                output=model2(inp,text)
+                output=model2(text)
         elif option ==None:
                 return render_template_string('the text could not be classified into any othe given fields please try click any of the models mentioned')
 
         return render_template('index.html',output=output)
 
-def model2(inp,text):
+def model2(text):
         with open(r'vector_2.pkl', 'rb') as f:
                 cv= pickle.load(f)
         X = cv.transform([text]).toarray()
@@ -130,7 +130,7 @@ def model2(inp,text):
         return text
 
        
-def H1_H2_H3(inp,text):
+def H1_H2_H3(text):
         with open(r'vector_H1-H2-H3.pkl', 'rb') as f:
                 cv= pickle.load(f)
         X = cv.transform([text]).toarray()
