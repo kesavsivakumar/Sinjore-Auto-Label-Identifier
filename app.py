@@ -110,17 +110,7 @@ def make_prediction():
         return render_template('index.html',output=output)
               
 
-        
-        option = request.form['options']
-        if option=='option1':
-                output=H1_H2_H3(text+type(text))
-        elif option=='option2':
-                output=model2(text)
-        elif option ==None:
-                return render_template_string('the text could not be classified into any othe given fields please try click any of the models mentioned')
-
-        return render_template('index.html',output=output)
-
+     
 def model2(text):
         with open(r'vector_2.pkl', 'rb') as f:
                 cv= pickle.load(f)
