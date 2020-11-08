@@ -58,42 +58,6 @@ def make_prediction():
             return render_template('index.html', label="No  Text")
         
         #inp=pre_process(text)
-        
-              
-
-        
-        option = request.form['options']
-        if option=='option1':
-                output=H1_H2_H3(text)
-        elif option=='option2':
-                output=model2(text)
-        elif option ==None:
-                return render_template_string('the text could not be classified into any othe given fields please try click any of the models mentioned')
-
-        return render_template('index.html',output=output)
-
-def model2(text):
-        with open(r'vector_2.pkl', 'rb') as f:
-                cv= pickle.load(f)
-        X = cv.transform([text]).toarray()
-        encoder = preprocessing.LabelEncoder()
-        encoder.classes_ = np.load(r'Document_product_classes_2.npy',allow_pickle=True)
-        v1=OneHotEncoder(handle_unknown='ignore')
-        v1.fit(np.asarray([[0],[1],[2],[3],[4],[5],[6]]))
-
-        json_file = open(r'model2.json', 'r')
-        model_json = json_file.read()
-        json_file.close()
-        model = model_from_json(model_json)
-        model = load_model(r'model2.h5')
-        binary=model.predict(X)
-        label=v1.inverse_transform(binary)
-        tag=encoder.inverse_transform(label)
-        text= tag[0]+'  -  '+text
-        return text
-
-       
-def H1_H2_H3(text):
 	if(re.match("AJNS*",str(text))!=None):
                 output='A_ID - '+text
                 return render_template('index.html',output=output)
@@ -131,6 +95,43 @@ def H1_H2_H3(text):
         if(re.match("keywords*",str(text).lower())!=None):
                 output='KWD - '+text
                 return render_template('index.html',output=output)
+        
+              
+
+        
+        option = request.form['options']
+        if option=='option1':
+                output=H1_H2_H3(text+type(text))
+        elif option=='option2':
+                output=model2(text)
+        elif option ==None:
+                return render_template_string('the text could not be classified into any othe given fields please try click any of the models mentioned')
+
+        return render_template('index.html',output=output)
+
+def model2(text):
+        with open(r'vector_2.pkl', 'rb') as f:
+                cv= pickle.load(f)
+        X = cv.transform([text]).toarray()
+        encoder = preprocessing.LabelEncoder()
+        encoder.classes_ = np.load(r'Document_product_classes_2.npy',allow_pickle=True)
+        v1=OneHotEncoder(handle_unknown='ignore')
+        v1.fit(np.asarray([[0],[1],[2],[3],[4],[5],[6]]))
+
+        json_file = open(r'model2.json', 'r')
+        model_json = json_file.read()
+        json_file.close()
+        model = model_from_json(model_json)
+        model = load_model(r'model2.h5')
+        binary=model.predict(X)
+        label=v1.inverse_transform(binary)
+        tag=encoder.inverse_transform(label)
+        text= tag[0]+'  -  '+text
+        return text
+
+       
+def H1_H2_H3(text):
+	
         with open(r'vector_H1-H2-H3.pkl', 'rb') as f:
                 cv= pickle.load(f)
         X = cv.transform([text]).toarray()
