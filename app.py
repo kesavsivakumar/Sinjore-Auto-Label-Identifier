@@ -59,7 +59,7 @@ def make_prediction():
         
         inp=pre_process(text)
         
-        if(re.match("AJNS*",str(text))!=None):
+        if(re.match("AJNS*",text)!=None):
                 output='A_ID - '+text
                 return render_template('index.html',output=output)
         if(re.match("Author Queries",str(text))!=None or re.match("AQ[0-9][0-9]*:*",str(text))!=None):
